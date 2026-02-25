@@ -7,12 +7,15 @@
 
 import SwiftUI
 
-struct AddView: View {
+struct AddExpense: View {
     @Environment(\.dismiss) var dismiss
     
     @State private var name = ""
     @State private var type = "Personal"
     @State private var amount = 0.0
+    
+    @State private var selectedCurrency = Locale.current.currency?.identifier ?? "RON"
+    let currencies = Locale.commonISOCurrencyCodes.sorted()
     
     var expenses: Expenses
     
@@ -26,10 +29,22 @@ struct AddView: View {
                 Picker("Type", selection: $type) {
                     ForEach(types, id:\.self) {
                         Text($0)
+                            .tag($0)
                     }
                 }
                 
-                TextField("Amount", value:$amount, format: .currency(code: "USD"))
+                Picker("Currency", selection: $selectedCurrency) {
+                    ForEach(currencies, id: \.self) { code in
+                        Text("\(code) – \(Locale.current.localizedString(forCurrencyCode: code) ?? code)")
+                            .tag(code)
+                    }
+                }
+                
+                TextField(
+                    "Amount",
+                    value: $amount,
+                    format: .currency(code: selectedCurrency)
+                )
                     .keyboardType(.decimalPad)
             }
             .navigationTitle("Add new expense")
@@ -38,7 +53,8 @@ struct AddView: View {
                     let item = ExpenseItem(
                         name: name,
                         type: type,
-                        amount: amount
+                        amount: amount,
+                        currency: selectedCurrency
                     )
                     expenses.items.append(item)
                     dismiss()
@@ -49,5 +65,5 @@ struct AddView: View {
 }
 
 #Preview {
-    AddView(expenses: Expenses())
+    AddExpense(expenses: Expenses())
 }

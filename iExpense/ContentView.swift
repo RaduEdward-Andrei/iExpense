@@ -12,6 +12,7 @@ struct ExpenseItem: Identifiable, Codable {
     let name: String
     let type: String
     let amount: Double
+    var currency: String
 }
 
 @Observable
@@ -25,14 +26,16 @@ class Expenses {
     }
     
     init() {
-        if let savedItems = UserDefaults.standard.data(forKey: "Items") {
-            if let decodedItems = try? JSONDecoder().decode([ExpenseItem].self, from: savedItems) {
-                    items = decodedItems
-                    return
-                }
+        guard let savedItems = UserDefaults.standard.data(forKey: "Items") else {
+            items = []
+            return
         }
         
-        items = []
+        do {
+            items = try JSONDecoder().decode([ExpenseItem].self, from: savedItems)
+        } catch {
+            items = []
+        }
     }
 }
 
@@ -55,7 +58,10 @@ struct ContentView: View {
                         
                         Spacer()
                         
-                        Text(item.amount, format: .currency(code: "USD"))
+                        Text(
+                            item.amount,
+                            format: .currency(code: item.currency)
+                        )
                     }
                 }
                 .onDelete(perform: removeItems)
@@ -67,7 +73,7 @@ struct ContentView: View {
                 }
             }
             .sheet(isPresented: $showingAddExpense) {
-                AddView(expenses: expenses)
+                AddExpense(expenses: expenses)
             }
         }
     }
