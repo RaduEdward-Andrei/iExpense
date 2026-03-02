@@ -55,11 +55,8 @@ The project demonstrates state-driven UI updates and safe list manipulation acro
 ## Screenshots
 
 <p align="center">
-  <img src="Screenshots/main-screen.png" width="300">
-</p>
-
-<p align="center">
-  <img src="Screenshots/add-expense.png" width="300">
+  <img src="Screenshots/main-screen.png" width="300" />
+  <img src="Screenshots/add-expense.png" width="300" />
 </p>
 
 ---
