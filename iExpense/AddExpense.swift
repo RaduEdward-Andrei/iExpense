@@ -25,6 +25,7 @@ struct AddExpense: View {
         NavigationStack {
             Form {
                 TextField("Name", text: $name)
+                    .autocorrectionDisabled()   
                 
                 Picker("Type", selection: $type) {
                     ForEach(types, id:\.self) {

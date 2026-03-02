@@ -44,28 +44,34 @@ struct ContentView: View {
     
     @State private var showingAddExpense = false
     
+    private var personalExpenses: [ExpenseItem] {
+        expenses.items.filter { $0.type == "Personal" }
+    }
+    
+    private var businessExpenses: [ExpenseItem] {
+        expenses.items.filter { $0.type == "Business" }
+    }
+    
     var body: some View {
         NavigationStack {
             List {
-                ForEach(expenses.items) { item in
-                    HStack {
-                        VStack(alignment: .leading) {
-                            Text(item.name)
-                                .font(.headline)
-                            
-                            Text(item.type)
-                        }
-                        
-                        Spacer()
-                        
-                        Text(
-                            item.amount,
-                            format: .currency(code: item.currency)
-                        )
-                        .expenseAmountStyle(for: item.amount)
+                Section("Personal") {
+                    ForEach(personalExpenses) { item in
+                        expenseRow(for: item)
+                    }
+                    .onDelete { offsets in
+                        deleteItems(in: personalExpenses, at: offsets)
                     }
                 }
-                .onDelete(perform: removeItems)
+                
+                Section("Business") {
+                    ForEach(businessExpenses) { item in
+                        expenseRow(for: item)
+                    }
+                    .onDelete { offsets in
+                        deleteItems(in: businessExpenses, at: offsets)
+                    }
+                }
             }
             .navigationTitle("iExpense")
             .toolbar {
@@ -79,8 +85,29 @@ struct ContentView: View {
         }
     }
     
-    func removeItems(at offsets: IndexSet) {
-        expenses.items.remove(atOffsets: offsets)
+    private func deleteItems(in sectionItems: [ExpenseItem], at offsets: IndexSet) {
+        let idsToDelete = offsets.map { sectionItems[$0].id }
+        expenses.items.removeAll { idsToDelete.contains($0.id) }
+    }
+    
+    @ViewBuilder
+    private func expenseRow(for item: ExpenseItem) -> some View {
+        HStack {
+            VStack(alignment: .leading) {
+                Text(item.name)
+                    .font(.headline)
+                
+                Text(item.type)
+            }
+            
+            Spacer()
+            
+            Text(
+                item.amount,
+                format: .currency(code: item.currency)
+            )
+            .expenseAmountStyle(for: item.amount)
+        }
     }
 }
 
@@ -89,17 +116,17 @@ struct ExpenseAmountStyle: ViewModifier {
     
     private var textColor: Color {
         switch amount {
-        case ..<10:  return .teal
-        case ..<100: return .orange
-        default:     return .red
+            case ..<10:  return .teal
+            case ..<100: return .orange
+            default:     return .red
         }
     }
-
+    
     private var fontWeight: Font.Weight {
         switch amount {
-        case ..<10:  return .regular
-        case ..<100: return .semibold
-        default:     return .bold
+            case ..<10:  return .regular
+            case ..<100: return .semibold
+            default:     return .bold
         }
     }
     
