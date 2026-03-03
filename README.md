@@ -43,7 +43,7 @@ A SwiftUI-based expense tracking application featuring local persistence, multi-
 
 Short demo video:
 
-[Watch the demo on LinkedIn]()
+[Watch the demo on LinkedIn](https://www.linkedin.com/posts/edward-andrei-radu_swift-swiftui-iosdevelopment-activity-7434578608397897728-ME_R)
 
 ---
 
