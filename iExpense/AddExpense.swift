@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct AddExpense: View {
-    @Environment(\.dismiss) var dismiss
+    @Environment(\.dismiss) private var dismiss
     
     @State private var name = ""
     @State private var type = "Personal"
@@ -17,39 +17,46 @@ struct AddExpense: View {
     @State private var selectedCurrency = Locale.current.currency?.identifier ?? "RON"
     let currencies = Locale.commonISOCurrencyCodes.sorted()
     
-    var expenses: Expenses
+    let expenses: Expenses
     
     let types = ["Business", "Personal"]
     
     var body: some View {
-        NavigationStack {
-            Form {
-                TextField("Name", text: $name)
-                    .autocorrectionDisabled()   
-                
-                Picker("Type", selection: $type) {
-                    ForEach(types, id:\.self) {
-                        Text($0)
-                            .tag($0)
-                    }
+        Form {
+            TextField("Name", text: $name)
+                .autocorrectionDisabled()
+            
+            Picker("Type", selection: $type) {
+                ForEach(types, id:\.self) {
+                    Text($0)
+                        .tag($0)
                 }
-                
-                Picker("Currency", selection: $selectedCurrency) {
-                    ForEach(currencies, id: \.self) { code in
-                        Text("\(code) – \(Locale.current.localizedString(forCurrencyCode: code) ?? code)")
-                            .tag(code)
-                    }
-                }
-                
-                TextField(
-                    "Amount",
-                    value: $amount,
-                    format: .currency(code: selectedCurrency)
-                )
-                    .keyboardType(.decimalPad)
             }
-            .navigationTitle("Add new expense")
-            .toolbar {
+            
+            Picker("Currency", selection: $selectedCurrency) {
+                ForEach(currencies, id: \.self) { code in
+                    Text("\(code) – \(Locale.current.localizedString(forCurrencyCode: code) ?? code)")
+                        .tag(code)
+                }
+            }
+            
+            TextField(
+                "Amount",
+                value: $amount,
+                format: .currency(code: selectedCurrency)
+            )
+            .keyboardType(.decimalPad)
+        }
+        .navigationTitle("Add new expense")
+        .navigationBarBackButtonHidden()
+        .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Button("Cancel") {
+                    dismiss()
+                }
+            }
+            
+            ToolbarItem(placement: .confirmationAction) {
                 Button("Save") {
                     let item = ExpenseItem(
                         name: name,
@@ -66,5 +73,7 @@ struct AddExpense: View {
 }
 
 #Preview {
-    AddExpense(expenses: Expenses())
+    NavigationStack {
+        AddExpense(expenses: Expenses())
+    }
 }

@@ -19,7 +19,7 @@ struct ExpenseItem: Identifiable, Codable {
 class Expenses {
     var items = [ExpenseItem]() {
         didSet {
-            if let encoded =  try? JSONEncoder().encode(items) {
+            if let encoded = try? JSONEncoder().encode(items) {
                 UserDefaults.standard.set(encoded, forKey: "Items")
             }
         }
@@ -42,7 +42,6 @@ class Expenses {
 struct ContentView: View {
     @State private var expenses = Expenses()
     
-    @State private var showingAddExpense = false
     
     private var personalExpenses: [ExpenseItem] {
         expenses.items.filter { $0.type == "Personal" }
@@ -75,12 +74,11 @@ struct ContentView: View {
             }
             .navigationTitle("iExpense")
             .toolbar {
-                Button("Add expense", systemImage: "plus") {
-                    showingAddExpense = true
+                NavigationLink {
+                    AddExpense(expenses: expenses)
+                } label: {
+                    Image(systemName: "plus")
                 }
-            }
-            .sheet(isPresented: $showingAddExpense) {
-                AddExpense(expenses: expenses)
             }
         }
     }
