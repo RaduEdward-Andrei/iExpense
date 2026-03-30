@@ -8,54 +8,93 @@
 import SwiftData
 import SwiftUI
 
+enum SortOption: String, CaseIterable {
+    case name = "Name"
+    case amount = "Amount"
+}
+
+enum FilterOption: String, CaseIterable {
+    case all = "All"
+    case personal = "Personal"
+    case business = "Business"
+}
+
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var expenses: [ExpenseItem]
     
     
-    private var personalExpenses: [ExpenseItem] {
-        expenses.filter { $0.type == "Personal" }
-    }
+    @State private var sortOption: SortOption = .name
+    @State private var filterOption: FilterOption = .all
     
-    private var businessExpenses: [ExpenseItem] {
-        expenses.filter { $0.type == "Business" }
+    private var visibleExpenses: [ExpenseItem] {
+        let filtered: [ExpenseItem]
+        
+        switch filterOption {
+        case .all:
+            filtered = expenses
+        case .personal:
+            filtered = expenses.filter { $0.type == "Personal" }
+        case .business:
+            filtered = expenses.filter { $0.type == "Business" }
+        }
+        
+        switch sortOption {
+        case .name:
+            return filtered.sorted {
+                $0.name.localizedCompare($1.name) == .orderedAscending
+            }
+        case .amount:
+            return filtered.sorted { $0.amount < $1.amount }
+        }
     }
     
     var body: some View {
         NavigationStack {
             List {
-                Section("Personal") {
-                    ForEach(personalExpenses) { item in
-                        expenseRow(for: item)
-                    }
-                    .onDelete { offsets in
-                        deleteItems(in: personalExpenses, at: offsets)
-                    }
+                ForEach(visibleExpenses) { item in
+                    expenseRow(for: item)
                 }
-                
-                Section("Business") {
-                    ForEach(businessExpenses) { item in
-                        expenseRow(for: item)
-                    }
-                    .onDelete { offsets in
-                        deleteItems(in: businessExpenses, at: offsets)
-                    }
-                }
+                .onDelete(perform: deleteItems)
             }
             .navigationTitle("iExpense")
             .toolbar {
-                NavigationLink {
-                    AddExpense()
-                } label: {
-                    Image(systemName: "plus")
+                ToolbarItemGroup(placement: .topBarTrailing) {
+                    
+                    Menu {
+                        Section("Sort") {
+                            Picker("Sort", selection: $sortOption) {
+                                ForEach(SortOption.allCases, id: \.self) { option in
+                                    Text(option.rawValue)
+                                }
+                            }
+                        }
+                        
+                        Section("Filter") {
+                            Picker("Filter", selection: $filterOption) {
+                                ForEach(FilterOption.allCases, id: \.self) { option in
+                                    Text(option.rawValue)
+                                }
+                            }
+                        }
+                        
+                    } label: {
+                        Image(systemName: "arrow.up.arrow.down")
+                    }
+                    
+                    NavigationLink {
+                        AddExpense()
+                    } label: {
+                        Image(systemName: "plus")
+                    }
                 }
             }
         }
     }
     
-    private func deleteItems(in sectionItems: [ExpenseItem], at offsets: IndexSet) {
+    private func deleteItems(at offsets: IndexSet) {
         for offset in offsets {
-            let item = sectionItems[offset]
+            let item = visibleExpenses[offset]
             modelContext.delete(item)
         }
     }
