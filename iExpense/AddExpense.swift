@@ -5,9 +5,11 @@
 //  Created by Radu Edward-Andrei on 25.02.2026.
 //
 
+import SwiftData
 import SwiftUI
 
 struct AddExpense: View {
+    @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     
     @State private var name = ""
@@ -15,11 +17,9 @@ struct AddExpense: View {
     @State private var amount = 0.0
     
     @State private var selectedCurrency = Locale.current.currency?.identifier ?? "RON"
-    let currencies = Locale.commonISOCurrencyCodes.sorted()
+    private let currencies = Locale.commonISOCurrencyCodes.sorted()
     
-    let expenses: Expenses
-    
-    let types = ["Business", "Personal"]
+    private let types = ["Business", "Personal"]
     
     var body: some View {
         Form {
@@ -64,7 +64,7 @@ struct AddExpense: View {
                         amount: amount,
                         currency: selectedCurrency
                     )
-                    expenses.items.append(item)
+                    modelContext.insert(item)
                     dismiss()
                 }
             }
@@ -74,6 +74,7 @@ struct AddExpense: View {
 
 #Preview {
     NavigationStack {
-        AddExpense(expenses: Expenses())
+        AddExpense()
     }
+    .modelContainer(for: ExpenseItem.self, inMemory: true)
 }

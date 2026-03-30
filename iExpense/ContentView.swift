@@ -5,50 +5,20 @@
 //  Created by Radu Edward-Andrei on 24.02.2026.
 //
 
+import SwiftData
 import SwiftUI
 
-struct ExpenseItem: Identifiable, Codable {
-    var id = UUID()
-    let name: String
-    let type: String
-    let amount: Double
-    var currency: String
-}
-
-@Observable
-class Expenses {
-    var items = [ExpenseItem]() {
-        didSet {
-            if let encoded = try? JSONEncoder().encode(items) {
-                UserDefaults.standard.set(encoded, forKey: "Items")
-            }
-        }
-    }
-    
-    init() {
-        guard let savedItems = UserDefaults.standard.data(forKey: "Items") else {
-            items = []
-            return
-        }
-        
-        do {
-            items = try JSONDecoder().decode([ExpenseItem].self, from: savedItems)
-        } catch {
-            items = []
-        }
-    }
-}
-
 struct ContentView: View {
-    @State private var expenses = Expenses()
+    @Environment(\.modelContext) private var modelContext
+    @Query private var expenses: [ExpenseItem]
     
     
     private var personalExpenses: [ExpenseItem] {
-        expenses.items.filter { $0.type == "Personal" }
+        expenses.filter { $0.type == "Personal" }
     }
     
     private var businessExpenses: [ExpenseItem] {
-        expenses.items.filter { $0.type == "Business" }
+        expenses.filter { $0.type == "Business" }
     }
     
     var body: some View {
@@ -75,7 +45,7 @@ struct ContentView: View {
             .navigationTitle("iExpense")
             .toolbar {
                 NavigationLink {
-                    AddExpense(expenses: expenses)
+                    AddExpense()
                 } label: {
                     Image(systemName: "plus")
                 }
@@ -84,8 +54,10 @@ struct ContentView: View {
     }
     
     private func deleteItems(in sectionItems: [ExpenseItem], at offsets: IndexSet) {
-        let idsToDelete = offsets.map { sectionItems[$0].id }
-        expenses.items.removeAll { idsToDelete.contains($0.id) }
+        for offset in offsets {
+            let item = sectionItems[offset]
+            modelContext.delete(item)
+        }
     }
     
     @ViewBuilder
@@ -146,4 +118,5 @@ extension View {
 
 #Preview {
     ContentView()
+        .modelContainer(for: ExpenseItem.self, inMemory: true)
 }
