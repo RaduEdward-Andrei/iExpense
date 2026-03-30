@@ -1,6 +1,6 @@
 # iExpense
 
-A SwiftUI-based expense tracking application featuring local persistence, multi-currency support, and structured expense grouping.
+A SwiftUI-based expense tracking application featuring local persistence, multi-currency support, and dynamic sorting and filtering.
 
 ---
 
@@ -18,12 +18,19 @@ A SwiftUI-based expense tracking application featuring local persistence, multi-
 ### Expense Management
 - Add expenses with name, type, amount, and currency
 - Delete expenses using native swipe gestures
-- Group expenses into Personal and Business sections
+
+### Sorting & Filtering
+- Sort expenses by name or amount
+- Filter expenses by:
+  - All
+  - Personal
+  - Business
+- Dynamic list updates based on selected options
 
 ### Persistence
-- Local storage using JSON encoding
-- Automatic save on data change
-- Data restored on app launch
+- Local storage using SwiftData
+- Automatic data updates via reactive queries (`@Query`)
+- No manual save/load logic required
 
 ### Multi-Currency Support
 - Currency picker using ISO currency codes
@@ -51,9 +58,9 @@ Short demo video:
 
 - Swift
 - SwiftUI
-- Observation (`@Observable`)
-- JSON encoding / decoding
-- Local persistence via `UserDefaults`
+- SwiftData (`@Model`, `@Query`, `modelContext`)
+- Observation system
+- Locale & currency APIs
 
 ---
 
@@ -63,8 +70,8 @@ Built as part of **Hacking with Swift – SwiftUI (Project 7)**
 https://www.hackingwithswift.com/books/ios-swiftui
 
 Extended beyond the base tutorial with:
+- Migration from UserDefaults to SwiftData
+- Dynamic sorting and filtering
 - Multi-currency support
-- Section-based grouping
-- Safe deletion across filtered sections
 - Conditional UI styling
 - Reusable view abstractions
