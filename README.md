@@ -7,9 +7,9 @@ A SwiftUI-based expense tracking application featuring local persistence, multi-
 ## Screenshots
 
 <p align="center">
-  <img src="Screenshots/main-screen.png" width="300" />
-  <img src="Screenshots/add-expense.png" width="300" />
-  <img src="Screenshots/edit-expense.png" width="300" />
+  <img src="Screenshots/main-screen.png" width="200" />
+  <img src="Screenshots/add-expense.png" width="200" />
+  <img src="Screenshots/edit-expense.png" width="200" />
 </p>
 
 ---
