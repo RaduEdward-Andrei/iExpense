@@ -53,7 +53,11 @@ struct ContentView: View {
         NavigationStack {
             List {
                 ForEach(visibleExpenses) { item in
-                    expenseRow(for: item)
+                    NavigationLink {
+                        EditExpense(expense: item)
+                    } label: {
+                        expenseRow(for: item)
+                    }
                 }
                 .onDelete(perform: deleteItems)
             }
