@@ -101,12 +101,20 @@ struct ContentView: View {
     
     @ViewBuilder
     private func expenseRow(for item: ExpenseItem) -> some View {
-        HStack {
-            VStack(alignment: .leading) {
+        HStack(spacing: 12) {
+            Image(systemName: item.type == "Business" ? "briefcase.fill" : "person.fill")
+                .font(.subheadline)
+                .foregroundStyle(item.type == "Business" ? .indigo : .blue)
+                .frame(width: 28, height: 28)
+                .background(.ultraThinMaterial, in: Circle())
+            
+            VStack(alignment: .leading, spacing: 4) {
                 Text(item.name)
                     .font(.headline)
                 
                 Text(item.type)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
             }
             
             Spacer()
@@ -117,6 +125,7 @@ struct ContentView: View {
             )
             .expenseAmountStyle(for: item.amount)
         }
+        .padding(.vertical, 4)
     }
 }
 
@@ -125,8 +134,8 @@ struct ExpenseAmountStyle: ViewModifier {
     
     private var textColor: Color {
         switch amount {
-            case ..<10:  return .teal
-            case ..<100: return .orange
+            case ..<10:  return .primary.opacity(0.7)
+            case ..<100: return .primary
             default:     return .red
         }
     }
@@ -141,11 +150,15 @@ struct ExpenseAmountStyle: ViewModifier {
     
     func body(content: Content) -> some View {
         content
-            .padding(.horizontal, 10)
-            .padding(.vertical, 6)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 7)
             .foregroundStyle(textColor)
             .fontWeight(fontWeight)
-            .background(textColor.opacity(0.15), in: Capsule())
+            .background(.ultraThinMaterial, in: Capsule())
+            .overlay(
+                Capsule()
+                    .stroke(Color.white.opacity(0.05))
+            )
     }
 }
 
