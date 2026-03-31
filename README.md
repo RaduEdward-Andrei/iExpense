@@ -1,6 +1,6 @@
 # iExpense
 
-A SwiftUI-based expense tracking application featuring local persistence, multi-currency support, and dynamic sorting and filtering.
+A SwiftUI-based expense tracking application featuring local persistence, multi-currency support, expense editing, and dynamic sorting and filtering.
 
 ---
 
@@ -9,6 +9,7 @@ A SwiftUI-based expense tracking application featuring local persistence, multi-
 <p align="center">
   <img src="Screenshots/main-screen.png" width="300" />
   <img src="Screenshots/add-expense.png" width="300" />
+  <img src="Screenshots/edit-expense.png" width="300" />
 </p>
 
 ---
@@ -17,6 +18,7 @@ A SwiftUI-based expense tracking application featuring local persistence, multi-
 
 ### Expense Management
 - Add expenses with name, type, amount, and currency
+- Edit existing expenses through a dedicated form
 - Delete expenses using native swipe gestures
 
 ### Sorting & Filtering
@@ -37,7 +39,9 @@ A SwiftUI-based expense tracking application featuring local persistence, multi-
 - Locale-aware currency formatting
 - Per-expense currency handling
 
-### Conditional Styling
+### UI Improvements
+- Native-style expense list with improved visual hierarchy
+- Category icons for Personal and Business expenses
 - Amount styling based on value thresholds:
   - Low (< 10)
   - Medium (< 100)
@@ -48,8 +52,9 @@ A SwiftUI-based expense tracking application featuring local persistence, multi-
 
 ## Demo
 
-Short demo video:
+<video src="Screenshots/Demo.mov" controls width="300"></video>
 
+Or watch on LinkedIn:
 [Watch the demo on LinkedIn](https://www.linkedin.com/posts/edward-andrei-radu_swift-swiftui-iosdevelopment-activity-7434578608397897728-ME_R)
 
 ---
@@ -66,12 +71,13 @@ Short demo video:
 
 ## Learning Context
 
-Built as part of **Hacking with Swift – SwiftUI (Project 7)**  
+Built as part of **Hacking with Swift – SwiftUI (Project 7 & 12)**  
 https://www.hackingwithswift.com/books/ios-swiftui
 
 Extended beyond the base tutorial with:
 - Migration from UserDefaults to SwiftData
+- Expense editing support
 - Dynamic sorting and filtering
 - Multi-currency support
-- Conditional UI styling
+- Native-style UI refinements
 - Reusable view abstractions
